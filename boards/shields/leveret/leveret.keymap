@@ -1,0 +1,131 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/* Layers (Must be all caps. Layers can only access other layers that appear later in the stack, ie layer 7 cannot access layer 0. */
+# define BASE   0
+# define GAME   1
+# define BT     2
+# define NAV    3
+# define SYM    4
+# define NUM    5
+# define FN     6
+# define MOUSE  7
+
+/* Abstractions */
+#define COMBO(NAME, BINDINGS, KEYPOS, LAYERS) \
+  combo_##NAME { \
+    timeout-ms = <50>; \
+    bindings = <BINDINGS>; \
+    key-positions = <KEYPOS>; \
+    layers = <LAYERS>; \
+  };
+
+/* Behavior settings */
+&sl {
+    release-after-ms = <500>;
+};
+
+/* Key positions
+ 0  1  2  3  4                  5  6  7  8  9
+10 11 12 13 14                 15 16 17 18 19
+20 21 22 23 24 \25\       /26/ 27 28 29 30 31
+            \32 33 34\ /35 36 37/          */
+
+/ {
+    behaviors {
+        mo_sl: behavior_mo_sl {
+            compatible = "zmk,behavior-hold-tap";
+            label = "mo_sl";
+            #binding-cells = <2>;
+            tapping-term-ms = <280>;
+            flavor = "balanced";
+            bindings = <&mo>, <&sl>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+     /* COMBO(NAME, BINDING, KEYPOS, LAYERS) */
+        COMBO(enter, &kp ENTER, 14 24, BASE GAME)
+        COMBO(esc, &kp ESC, 0 1, BASE)
+        COMBO(caps, &kp CAPS, 0 10, BASE)
+        COMBO(fn, &sl FN, 0 10, BASE)
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        base {
+            bindings = <
+    &kp Q &kp W &kp E &kp R &kp T                                             &kp Y &kp U &kp I &kp O &kp P
+    &kp A &kp S &kp D &kp F &kp G                                             &kp H &kp J &kp K &kp L &kp QUOT
+    &kp Z &kp X &kp C &kp V &kp B &mo_sl SYM SYM                            &kp 0 &kp N &kp M  &kp CMMA &kp DOT &kp SLASH
+                                 &mo NAV &kp SPACE &tog MOUSE            &kp BSPC &kp ENTER &kp DEL
+            >;
+        };
+
+        game {
+            bindings = <
+    &kp TAB &kp Q &kp W &kp E &kp R                                             &kp Y &kp U &kp I &kp O &kp P
+    &kp LCTRL &kp A &kp S &kp D &kp F                                             &kp H &kp J &kp K &kp L &kp QUOT
+    &kp LSHFT &kp Z &kp X &kp C &kp V &kp T                            &kp 0 &kp N &kp M  &kp CMMA &kp DOT &kp SLASH
+                                 &kp B &kp SPACE &kp G            &kp 0 &kp SPC &mo 2
+            >;
+        };
+
+        bt {
+            bindings = <
+    &bt BT_DISC &trans &trans &trans &trans                                        &trans &trans &trans &trans &bt BT_CLR
+    &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &trans                                        &trans &trans &trans &trans &trans
+    &trans &trans &trans &trans &trans &trans                          &trans &trans &trans &trans &trans &trans
+                                &trans &trans &trans            &trans &trans &trans
+            >;
+        };
+
+        nav {
+            bindings = <
+    &trans &trans &trans &trans &trans                                        &trans &kp HOME &trans &kp END &trans
+    &trans &trans &sk LCTRL &sk LSHFT &trans                                        &kp LEFT &kp UP &kp DOWN &kp RIGHT &trans
+    &trans &trans &kp LA(RIGHT) &kp LA(LEFT) &trans &trans                          &trans &trans &trans &trans &trans &trans
+                                &trans &trans &trans            &trans &trans &trans
+            >;
+        };
+
+        sym {
+            bindings = <
+    &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT                                        &kp CARET &kp LBKT &kp RBKT &trans &trans
+    &trans &kp GRAVE &kp PLUS &kp EQUAL &kp STAR                                        &kp AMPS &kp LPAR &kp RPAR &trans &trans
+    &trans &trans &kp MINUS &kp UNDER &trans &trans                          &trans &trans &kp LBRC &kp RBRC &trans &trans
+                                &trans &trans &trans            &trans &trans &trans
+            >;
+        };
+
+        num {
+            bindings = <
+    &trans &trans &trans &trans &trans                                        &trans &trans &trans &trans &trans
+    &kp N1 &kp N2 &kp N3 &kp N4 &kp N5                                        &kp N6 &kp N7 &kp N8 &kp N9 &kp N0
+    &trans &trans &trans &trans &trans &trans                          &trans &trans &trans &trans &trans &trans
+                                &trans &trans &trans            &trans &trans &trans
+            >;
+        };
+
+        fn {
+            bindings = <
+    &trans &trans &trans &trans &trans                                        &trans &trans &trans &trans &trans
+    &kp F1 &kp F2 &kp F3 &kp F4 &kp F5                                        &kp F6 &kp F7 &kp F8 &kp F9 &kp F10
+    &kp F11 &kp F12 &trans &trans &trans &trans                          &trans &trans &trans &trans &trans &trans
+                                &trans &trans &trans            &trans &trans &trans
+            >;
+        };
+
+        mouse {
+            bindings = <
+    &trans &trans &trans &trans &trans                                        &trans &trans &trans &trans &trans
+    &trans &trans &trans &trans &trans                                        &trans &trans &trans &trans &trans
+    &trans &trans &trans &trans &trans &trans                          &trans &trans &trans &trans &trans &trans
+                                &trans &trans &trans            &trans &trans &trans
+            >;
+        };
+    };
+};
