@@ -1,1 +1,12 @@
 #include "leveret.dtsi"
+
+// dummy cols/rows
+&kscan0 {
+	col-gpios
+	= <&pro_micro 5 (GPIO_ACTIVE_HIGH)>
+	;
+    row-gpios
+	= <&pro_micro 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+    ;
+};
+
